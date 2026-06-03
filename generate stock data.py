@@ -2,6 +2,9 @@ import json
 import random
 from datetime import datetime
 import time
+import boto3
+
+kinesis = boto3.client('kinesis', region_name='us-east-1')
 tickers = ['INFY', 'HDFCBANK', 'RELIANCE', 'TCS', 'ICICIBANK', 'HINDUNILVR', 'KOTAKBANK', 'SBIN', 'ITC', 'LT']
 base_price = {
     'INFY': 1500,
@@ -34,6 +37,12 @@ def generate_stock_data():
             })
 while True:
     trade = generate_stock_data()
-    print(json.dumps(trade))
-    time.sleep(1) 
+    kinesis.put_record(
+        StreamName='stock-trades-stream',
+        Data=json.dumps(trade),
+        PartitionKey=trade['ticker']
+    )
+    print(f"Sent: {json.dumps(trade)}")
+    time.sleep(1)
+    # time.sleep(1) 
 # print(json.dumps(generate_stock_data()))
