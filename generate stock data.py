@@ -18,7 +18,7 @@ base_price = {
     'ITC': 1000,
     'LT': 2200
 }
-
+          
 def generate_stock_data():
         ticker = random.choice(tickers)
         price = base_price[ticker] + random.uniform(-50, 50)
@@ -35,6 +35,7 @@ def generate_stock_data():
             'timestamp': timestamp,
             'trade_type': trade_type
             })
+
 while True:
     trade = generate_stock_data()
     kinesis.put_record(
